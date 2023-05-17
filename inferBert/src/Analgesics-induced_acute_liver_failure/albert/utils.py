@@ -9,6 +9,9 @@ import os
 import tqdm
 
 class TrainConfig:
+    """
+    Training and Model Configuration
+    """
 
     bert_model = "albert-base-v2"  # 'albert-base-v2', 'albert-large-v2', 'albert-xlarge-v2', 'albert-xxlarge-v2', 'bert-base-uncased', ...
     freeze_bert = False  # if True, freeze the encoder weights and only update the classification layer weights
@@ -30,6 +33,10 @@ class TrainConfig:
     # save_checkpoints_steps = 3000
 
 def data_preparation(DATA_DIR):
+    """
+    Load the data and the features
+    """
+
     train_data = pd.read_csv(DATA_DIR+"/train.tsv", sep='\t')
     test_data = pd.read_csv(DATA_DIR+"/test.tsv", sep='\t')
     dev_data = pd.read_csv(DATA_DIR+"/dev.tsv", sep='\t')
@@ -38,7 +45,9 @@ def data_preparation(DATA_DIR):
     return train_data, test_data, dev_data, features
 
 class CustomDataset(Dataset):
-    ''' This class tokenizes the sentences '''
+    """
+    This class tokenizes the sentences and prepare the dataset
+    """
 
     def __init__(self, data, maxlen, with_labels=True, bert_model='albert-base-v2'):
 
@@ -76,6 +85,7 @@ class CustomDataset(Dataset):
         
 def set_seed(seed):
     """ Set all seeds to make results reproducible """
+
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
@@ -86,6 +96,10 @@ def set_seed(seed):
     
 
 def evaluate_loss(net, device, criterion, dataloader):
+    """
+    Evaluate the loss on a dataset
+    """
+
     net.eval()
 
     mean_loss = 0

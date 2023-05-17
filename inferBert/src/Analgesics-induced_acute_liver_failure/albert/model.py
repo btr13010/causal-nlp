@@ -4,7 +4,7 @@ from torch.cuda.amp import autocast
 from transformers import AutoModel
 
 class EndPointClassifier(nn.Module):
-    ''' Main model '''
+    """ Main model """
 
     def __init__(self, bert_model="albert-base-v2", freeze_bert=False):
         super(EndPointClassifier, self).__init__()
@@ -40,12 +40,12 @@ class EndPointClassifier(nn.Module):
 
     @autocast()  # run in mixed precision
     def forward(self, input_ids, attn_masks, token_type_ids):
-        '''
+        """
         Inputs:
             -input_ids : Tensor  containing token ids
             -attn_masks : Tensor containing attention masks to be used to focus on non-padded values
             -token_type_ids : Tensor containing token type ids to be used to identify sentence1 and sentence2
-        '''
+        """
 
         # Feeding the inputs to the BERT-based model to obtain contextualized representations
         cont_reps, pooler_output = self.bert_layer(input_ids, attn_masks, token_type_ids, return_dict=False)

@@ -8,7 +8,7 @@ from utils import data_preparation, TrainConfig, CustomDataset
 from inference import get_probs_from_logits
 from model import EndPointClassifier
 
-def evaluate_loss(net, device, dataloader, label_dev):
+def evaluate_loss(net, device, dataloader, label_test):
     """
     Evaluate the loss on a dataset
     """
@@ -29,7 +29,7 @@ def evaluate_loss(net, device, dataloader, label_dev):
 
     metric = load_metric("glue", "mrpc")
     # Compute the accuracy and F1 scores
-    score = metric._compute(predictions=preds, references=label_dev)
+    score = metric._compute(predictions=preds, references=label_test)
     print(f"Accuracy: {score['accuracy']:.3f}")
     print(f"F1: {score['f1']:.3f}")
 
@@ -39,9 +39,9 @@ if __name__ == '__main__':
 
     # Load Data
     ANAL_DATA_DIR = "../../../dat/Analgesics-induced_acute_liver_failure/proc"
-    _, _, anal_dev_data, _ = data_preparation(ANAL_DATA_DIR)
-    label_dev = anal_dev_data['label']  # true labels
-    dev_data = CustomDataset(anal_dev_data, config.maxlen, config.bert_model)
+    _, anal_test_data, _, _ = data_preparation(ANAL_DATA_DIR)
+    label_test = anal_test_data['label']  # true labels
+    dev_data = CustomDataset(anal_test_data, config.maxlen, config.bert_model)
     dataloader = DataLoader(dev_data, batch_size=config.bs, num_workers=5)
 
     # Setup model
@@ -53,4 +53,4 @@ if __name__ == '__main__':
     net.to(device)
 
     # Evaluate
-    evaluate_loss(net, device, dataloader, label_dev)
+    evaluate_loss(net, device, dataloader, label_test)

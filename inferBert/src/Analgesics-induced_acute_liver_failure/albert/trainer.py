@@ -16,6 +16,9 @@ set_seed(42)  # Set seed for reproducibility
 config = TrainConfig()
 
 def train_bert(net, criterion, opti, lr, lr_scheduler, train_loader, val_loader, epochs, iters_to_accumulate):
+    """
+    Function that trains the model on the training set and evaluates it on the validation set
+    """
 
     best_loss = np.Inf
     best_ep = 1
@@ -99,6 +102,7 @@ if __name__ == '__main__':
         print("Creation of the models' folder...")
         os.makedirs('./models/')
 
+    # Data preparation
     ANAL_DATA_DIR = "../../../dat/Analgesics-induced_acute_liver_failure/proc"
     anal_train_data, anal_test_data, anal_dev_data, anal_features = data_preparation(ANAL_DATA_DIR)
 
@@ -112,8 +116,7 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_set, batch_size=config.bs, num_workers=5)
     val_loader = DataLoader(val_set, batch_size=config.bs, num_workers=5)
 
-    num_training_steps = config.epochs * len(train_loader)  # The total number of training steps
-
+    # Model setup
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     net = EndPointClassifier(config.bert_model, freeze_bert=config.freeze_bert)
@@ -124,6 +127,9 @@ if __name__ == '__main__':
 
     net.to(device)
 
+    # Setup Training
+    num_training_steps = config.epochs * len(train_loader)  # The total number of training steps
+
     criterion = nn.BCEWithLogitsLoss()
 
     opti = AdamW(net.parameters(), lr=config.lr, weight_decay=1e-2)
@@ -132,4 +138,5 @@ if __name__ == '__main__':
 
     lr_scheduler = get_linear_schedule_with_warmup(optimizer=opti, num_warmup_steps=config.num_warmup_steps, num_training_steps=t_total)
 
+    # Training
     train_bert(net, criterion, opti, config.lr, lr_scheduler, train_loader, val_loader, config.epochs, config.iters_to_accumulate)

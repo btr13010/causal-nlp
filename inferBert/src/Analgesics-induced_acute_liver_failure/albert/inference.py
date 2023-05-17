@@ -16,7 +16,7 @@ def get_probs_from_logits(logits):
     probs = torch.sigmoid(logits.unsqueeze(-1))
     return probs.detach().cpu().numpy() # detach tensor from computation graph (gradients are not tracked), save to cpu, and convert to numpy array
 
-def test_prediction(net, device, dataloader, with_labels=False, result_file=f"{output_dir}/test_results.tsv"):
+def test_prediction(net, device, dataloader, with_labels=True, result_file=f"{output_dir}/test_results.tsv"):
     """
     Predict the probabilities on a dataset with or without labels and print the result in a file
     """
@@ -72,6 +72,6 @@ if __name__ == '__main__':
     # Predictions on test set
     path_to_output_file = f'{output_dir}/test_results.tsv'
     print("Predicting on test data...")
-    test_prediction(net=model, device=device, dataloader=test_loader, with_labels=False, result_file=path_to_output_file)
+    test_prediction(net=model, device=device, dataloader=test_loader, with_labels=True, result_file=path_to_output_file)
     print()
     print("Predictions are available in : {}".format(path_to_output_file))
