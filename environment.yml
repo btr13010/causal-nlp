@@ -1,0 +1,17 @@
+name: causal-nlp
+channels:
+- pytorch
+dependencies:
+- python=3.8.10
+- anaconda
+- numpy
+- pandas
+- scipy
+- pip
+- pip:
+  - numpy==1.24.3
+  - pandas==1.5.3
+  - scipy==1.10.1
+  - tqdm==4.65.0
+  - torch==2.0.0
+  - transformers==4.29.1
