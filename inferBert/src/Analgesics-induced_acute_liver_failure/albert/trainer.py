@@ -13,10 +13,7 @@ from utils import CustomDataset, evaluate_loss, TrainConfig, set_seed, data_prep
 from model import EndPointClassifier
 
 set_seed(42)  # Set seed for reproducibility
-
-if not os.path.exists('./models/'):
-    print("Creation of the models' folder...")
-    os.makedirs('./models/')
+config = TrainConfig()
 
 def train_bert(net, criterion, opti, lr, lr_scheduler, train_loader, val_loader, epochs, iters_to_accumulate):
 
@@ -89,45 +86,50 @@ def train_bert(net, criterion, opti, lr, lr_scheduler, train_loader, val_loader,
             best_ep = ep + 1
 
     # Saving the model
-    path_to_model='models/{}_lr_{}_val_loss_{}_ep_{}.pt'.format(bert_model, lr, round(best_loss, 5), best_ep)
+    path_to_model='models/{}_lr_{}_val_loss_{}_ep_{}.pt'.format(config.bert_model, lr, round(best_loss, 5), best_ep)
     torch.save(net_copy.state_dict(), path_to_model)
     print("The model has been saved in {}".format(path_to_model))
 
     del loss
     torch.cuda.empty_cache()
 
-ANAL_DATA_DIR = "../../../dat/Analgesics-induced_acute_liver_failure/proc"
-anal_train_data, anal_test_data, anal_dev_data, anal_features = data_preparation(ANAL_DATA_DIR)
-config = TrainConfig()
+if __name__ == '__main__':
 
-# Creating instances of training and validation set
-print("Reading training data...")
-train_set = CustomDataset(anal_train_data, config.maxlen, config.bert_model)
-print("Reading validation data...")
-val_set = CustomDataset(anal_dev_data, config.maxlen, config.bert_model)
+    if not os.path.exists('./models/'):
+        print("Creation of the models' folder...")
+        os.makedirs('./models/')
 
-# Creating instances of training and validation dataloaders
-train_loader = DataLoader(train_set, batch_size=config.bs, num_workers=5)
-val_loader = DataLoader(val_set, batch_size=config.bs, num_workers=5)
+    ANAL_DATA_DIR = "../../../dat/Analgesics-induced_acute_liver_failure/proc"
+    anal_train_data, anal_test_data, anal_dev_data, anal_features = data_preparation(ANAL_DATA_DIR)
 
-num_training_steps = config.epochs * len(train_loader)  # The total number of training steps
+    # Creating instances of training and validation set
+    print("Reading training data...")
+    train_set = CustomDataset(anal_train_data, config.maxlen, config.bert_model)
+    print("Reading validation data...")
+    val_set = CustomDataset(anal_dev_data, config.maxlen, config.bert_model)
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # Creating instances of training and validation dataloaders
+    train_loader = DataLoader(train_set, batch_size=config.bs, num_workers=5)
+    val_loader = DataLoader(val_set, batch_size=config.bs, num_workers=5)
 
-net = EndPointClassifier(config.bert_model, freeze_bert=config.freeze_bert)
+    num_training_steps = config.epochs * len(train_loader)  # The total number of training steps
 
-if torch.cuda.device_count() > 1:  # if multiple GPUs
-    print("Let's use", torch.cuda.device_count(), "GPUs!")
-    net = nn.DataParallel(net)
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-net.to(device)
+    net = EndPointClassifier(config.bert_model, freeze_bert=config.freeze_bert)
 
-criterion = nn.BCEWithLogitsLoss()
+    if torch.cuda.device_count() > 1:  # if multiple GPUs
+        print("Let's use", torch.cuda.device_count(), "GPUs!")
+        net = nn.DataParallel(net)
 
-opti = AdamW(net.parameters(), lr=config.lr, weight_decay=1e-2)
+    net.to(device)
 
-t_total = (len(train_loader) // config.iters_to_accumulate) * config.epochs  # Necessary to take into account Gradient accumulation
+    criterion = nn.BCEWithLogitsLoss()
 
-lr_scheduler = get_linear_schedule_with_warmup(optimizer=opti, num_warmup_steps=config.num_warmup_steps, num_training_steps=t_total)
+    opti = AdamW(net.parameters(), lr=config.lr, weight_decay=1e-2)
 
-train_bert(net, criterion, opti, config.lr, lr_scheduler, train_loader, val_loader, config.epochs, config.iters_to_accumulate)
+    t_total = (len(train_loader) // config.iters_to_accumulate) * config.epochs  # Necessary to take into account Gradient accumulation
+
+    lr_scheduler = get_linear_schedule_with_warmup(optimizer=opti, num_warmup_steps=config.num_warmup_steps, num_training_steps=t_total)
+
+    train_bert(net, criterion, opti, config.lr, lr_scheduler, train_loader, val_loader, config.epochs, config.iters_to_accumulate)

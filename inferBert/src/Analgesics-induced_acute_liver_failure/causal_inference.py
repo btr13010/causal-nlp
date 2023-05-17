@@ -289,7 +289,7 @@ def generate_causal_tree(probability_file, feature_file, out_dir, threshold=100)
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--probability-file', type=str, default='./')
+    parser.add_argument('--probability-file', type=str, default='../../dat/Analgesics-induced_acute_liver_failure/output/test_results.tsv')
     parser.add_argument('--feature-file', type=str, default='../../dat/Analgesics-induced_acute_liver_failure/feature.tsv')
     parser.add_argument('--out-dir', type=str, default='../output')
 
