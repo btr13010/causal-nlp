@@ -2,11 +2,11 @@ import torch
 import torch.nn as nn
 from transformers import AutoModel
 
-class SentencePairClassifier(nn.Module):
+class EndPointClassifier(nn.Module):
     ''' Main model '''
 
     def __init__(self, bert_model="albert-base-v2", freeze_bert=False):
-        super(SentencePairClassifier, self).__init__()
+        super(EndPointClassifier, self).__init__()
         #  Instantiating BERT-based model object
         self.bert_layer = AutoModel.from_pretrained(bert_model)
 

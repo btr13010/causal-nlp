@@ -10,7 +10,7 @@ import copy
 import numpy as np
 
 from utils import CustomDataset, evaluate_loss, TrainConfig, set_seed, data_preparation
-from model import SentencePairClassifier
+from model import EndPointClassifier
 
 set_seed(42)  # Set seed for reproducibility
 
@@ -114,7 +114,7 @@ num_training_steps = config.epochs * len(train_loader)  # The total number of tr
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-net = SentencePairClassifier(config.bert_model, freeze_bert=config.freeze_bert)
+net = EndPointClassifier(config.bert_model, freeze_bert=config.freeze_bert)
 
 if torch.cuda.device_count() > 1:  # if multiple GPUs
     print("Let's use", torch.cuda.device_count(), "GPUs!")
