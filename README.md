@@ -6,6 +6,8 @@ Full flow for estimating causal effect utilizing counterfactual-informed text em
 
 ## TODO
 
+**REMEMBER** to train the initial counterfactual-generation first before moving to adding new loss terms to compare performance between the two methods
+
 - [ ] Train/Generate counterfactual data
 - [ ] Data exploration, planning to use a common dataset for all 3 tasks
 - [ ] Modify embedding training code to use T5 model (instead of BERT) that is pretrained during the counterfactual data generation 

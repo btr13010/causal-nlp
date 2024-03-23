@@ -1,8 +1,3 @@
-"""
-An extensible implementation of the Causal Bert model from 
-"Adapting Text Embeddings for Causal Inference" 
-    (https://arxiv.org/abs/1905.12741)
-"""
 from collections import defaultdict
 import os
 import pickle

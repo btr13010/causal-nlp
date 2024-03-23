@@ -1,0 +1,4 @@
+# python==3.10
+# pytorch==2.1.1
+transformers==4.5.1
+pytorch_lightning==1.5.10

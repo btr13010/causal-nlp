@@ -1,4 +1,4 @@
-WORKING_DIR=/home/wenjiaxin/AutoCAD
+WORKING_DIR=/home/ubuntu/baotq4/causal-nlp/counterfactual-generation
 
 MODEL_CONFIG=t5-large
 

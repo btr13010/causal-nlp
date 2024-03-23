@@ -1,12 +1,8 @@
-# AutoCAD
+# [AutoCAD] Counterfactual Auto Generation
 
-Code and datasets for our paper ["AutoCAD: Automatically Generating Counterfactuals for Mitigating Shortcut Learning"](https://arxiv.org/pdf/2211.16202.pdf)
+Code and datasets adapted from the paper ["AutoCAD: Automatically Generating Counterfactuals for Mitigating Shortcut Learning"](https://arxiv.org/pdf/2211.16202.pdf)
 
 ![autocad_overview](pic/autocad_overview.png)
-
-### Updates
-
-**[Oct 13 2022]** Code released
 
 ### 1. Environment Setup
 
