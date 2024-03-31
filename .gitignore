@@ -1,1 +1,4 @@
+counterfactual-generation/data/
+counterfactual-generation/results/
+**/__pycache__
 contrastive-embedding/results
