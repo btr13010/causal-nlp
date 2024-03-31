@@ -1,6 +1,6 @@
 WORKING_DIR=/home/ubuntu/baotq4/causal-nlp/counterfactual-generation
 
-MODEL_CONFIG=roberta-large
+MODEL_CONFIG=FacebookAI/roberta-large
 
 TASK=nli
 
@@ -12,17 +12,19 @@ DEV_PATH=${WORKING_DIR}/data/snli/ori_data/dev.json
 # save_dir
 SAVE_DIR=${WORKING_DIR}/results/roberta-large
 
-echo "Using GPUs: [$1]"
+GPUs=1
+
+echo "Using GPUs: [$GPUs]"
 echo "TASK: $TASK"
 
-TOKENIZERS_PARALLELISM=false python nlu.py \
+CUDA_VISIBLE_DEVICES=7 TOKENIZERS_PARALLELISM=false python nlu.py \
     --task $TASK \
     --train_set $TRAIN_PATH \
     --dev_set $DEV_PATH \
     --save_dir $SAVE_DIR \
     --lr 1e-5 \
     --max_epochs 20 \
-    --gpus $1 \
+    --gpus $GPUs \
     --model_config $MODEL_CONFIG \
     --warm_up 0 \
     --weight_decay 0.1 \

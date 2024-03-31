@@ -34,7 +34,9 @@ logging.enable_explicit_format()
 class Helper():
     def __init__(self, args):
         print('args.model_config = ', args.model_config)
-        self.tokenizer = AutoTokenizer.from_pretrained(args.model_config, local_files_only=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(args.model_config, 
+                                                    #    local_files_only=True
+                                                       )
         self.mask_id = self.get_token_id(self.tokenizer.mask_token)
         self.add_tokens()  # set all special tokens
 
@@ -360,7 +362,9 @@ def train(args):
 
     checkpoint_callback = ModelCheckpoint(monitor='val_acc', save_top_k=1, mode='max', verbose=True, save_on_train_epoch_end=False)
     val_check_interval = 1.0
-    trainer = pl.Trainer(gpus=[int(args.gpus)], max_epochs=args.max_epochs,
+    trainer = pl.Trainer(accelerator="auto",
+                        #  gpus=[int(args.gpus)], 
+                         max_epochs=args.max_epochs,
                          callbacks=[checkpoint_callback], val_check_interval=val_check_interval,
                          default_root_dir=args.save_dir, )
     trainer.fit(model, train_dataloader, dev_dataloader)

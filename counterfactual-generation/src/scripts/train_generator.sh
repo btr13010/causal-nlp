@@ -18,7 +18,7 @@ WARMUP=0.0
 
 echo "TASK: $TASK"
 
-TOKENIZERS_PARALLELISM=false python generator.py \
+CUDA_VISIBLE_DEVICES=1 TOKENIZERS_PARALLELISM=false python generator.py \
     --task $TASK \
     --train_set $TRAIN_PATH \
     --dev_set $DEV_PATH \

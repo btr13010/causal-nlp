@@ -233,7 +233,7 @@ def parse():
     parser.add_argument("--rationale_ratio", default=0.3, type=float)
    
     # nlu model
-    parser.add_argument("--nlu_model", type=str, default='roberta-large')
+    parser.add_argument("--nlu_model", type=str, default='FacebookAI/roberta-large')
 
     args = parser.parse_args()
 

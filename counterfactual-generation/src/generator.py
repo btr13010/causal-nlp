@@ -19,7 +19,7 @@ from pytorch_lightning.plugins import DeepSpeedPlugin
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from transformers import T5TokenizerFast, T5ForConditionalGeneration, AutoConfig, logging, get_linear_schedule_with_warmup
 from transformers import LogitsProcessorList, StoppingCriteriaList
-from transformers.generation_utils import SampleEncoderDecoderOutput, SampleDecoderOnlyOutput
+# from transformers.generation_utils import SampleEncoderDecoderOutput, SampleDecoderOnlyOutput
 from deepspeed.ops.adam import DeepSpeedCPUAdam, FusedAdam
 import torch
 import torch.distributed as dist
@@ -41,7 +41,9 @@ TASK_CONFIG={
 logging.enable_explicit_format()
 class Helper():
     def __init__(self, args):
-        self.tokenizer = T5TokenizerFast.from_pretrained(args.model_config, local_files_only=True)
+        self.tokenizer = T5TokenizerFast.from_pretrained(args.model_config,
+                                                        #  local_files_only=True
+                                                         )
         # print(self.tokenizer.extra_ids)
         self.extra_id_start = self.tokenizer.convert_tokens_to_ids(['<extra_id_0>'])[0]
         assert self.extra_id_start ==  32099
@@ -429,7 +431,9 @@ def train(args):
     plugins = DeepSpeedPlugin(stage=2, logging_level=logging.INFO) if args.deepspeed else None
 
     args.eval_step = min(args.eval_step, math.ceil(len(train_set) / (args.batch_size * int(args.gpus))))
-    trainer = pl.Trainer(gpus=int(args.gpus), max_epochs=args.max_epochs,
+    trainer = pl.Trainer(accelerator="auto",
+                        #  gpus=int(args.gpus), 
+                         max_epochs=args.max_epochs,
                          callbacks=[checkpoint_callback], val_check_interval=args.eval_step, accumulate_grad_batches=args.accumulation_step,
                          default_root_dir=args.save_dir, strategy=plugins, precision=args.precision)
     trainer.fit(model, train_dataloader, dev_dataloader)
